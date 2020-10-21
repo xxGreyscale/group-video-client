@@ -27,11 +27,11 @@ var localStreams = {
 var mainStreamId; // reference to main stream
 var screenShareActive = false; // flag for screen share 
 
-function initClientAndJoinChannel(agoraAppId, token, channelName, uid) {
+function initClientAndJoinChannel(agoraAppId, channelName) {
   // init Agora SDK
   client.init(agoraAppId, function () {
     console.log("AgoraRTC client initialized");
-    joinChannel(channelName, uid, token); // join channel upon successfull init
+    joinChannel(channelName); // join channel upon successfull init
   }, function (err) {
     console.log("[ERROR] : AgoraRTC client init failed", err);
   });
@@ -115,8 +115,10 @@ client.on("unmute-video", function (evt) {
 });
 
 // join a channel
-function joinChannel(channelName, uid, token) {
-  client.join(token, channelName, uid, function(uid) {
+function joinChannel(channelName) {
+  var token = generateToken();
+  var userID = null; // set to null to auto generate uid on successfull connection
+  client.join(token, channelName, userID, function(uid) {
       console.log("User " + uid + " join channel successfully");
       createCameraStream(uid);
       localStreams.camera.id = uid; // keep track of the stream uid 
@@ -138,6 +140,12 @@ function createCameraStream(uid) {
     console.log("getUserMedia successfully");
     // TODO: add check for other streams. play local stream full size if alone in channel
     localStream.play('local-video'); // play the given stream within the local-video div
+    $('#user-id').append(
+      $('<p/>', {'class': 'd-flex w-100 mb-0 justify-content-start'}).append(
+        document.createTextNode("You" + " - ("+uid+")")
+      )
+    );
+    $('#name-overlay').attr("style", "display:block");
 
     // publish local stream
     client.publish(localStream, function (err) {
@@ -153,6 +161,8 @@ function createCameraStream(uid) {
 
 // SCREEN SHARING
 function initScreenShare(agoraAppId, channelName) {
+  console.log(agoraAppId);
+  
   screenClient.init(agoraAppId, function () {
     console.log("AgoraRTC screenClient initialized");
     joinChannelAsScreenShare(channelName);
@@ -204,7 +214,7 @@ function joinChannelAsScreenShare(channelName) {
     // TODO: add logic to swap main video feed back from container
     remoteStreams[mainStreamId].stop(); // stop the main video stream playback
     addRemoteStreamMiniView(remoteStreams[mainStreamId]); // send the main video stream to a container
-    // localStreams.screen.stream.play('full-screen-video'); // play the screen share as full-screen-video (vortext effect?)
+    localStreams.screen.stream.play('full-screen-video'); // play the screen share as full-screen-video (vortext effect?)
     $("#video-btn").prop("disabled",true); // disable the video button (as cameara video stream is disabled)
   });
   
@@ -237,14 +247,18 @@ function addRemoteStreamMiniView(remoteStream){
   var streamId = remoteStream.getId();
   // append the remote stream template to #remote-streams
   $('#remote-streams').append(
-    $('<div/>', {'id': streamId + '_container',  'class': 'remote-stream-container col'}).append(
-      $('<div/>', {'id': streamId + '_mute', 'class': 'mute-overlay'}).append(
-          $('<i/>', {'class': 'fas fa-microphone-slash'})
-      ),
-      $('<div/>', {'id': streamId + '_no-video', 'class': 'no-video-overlay text-center'}).append(
-        $('<i/>', {'class': 'fas fa-user'})
-      ),
-      $('<div/>', {'id': 'agora_remote_' + streamId, 'class': 'remote-video'})
+    $('<div/>', {'id': streamId + '_container', 'class': 'p-0 col-12'}).append(
+      $('<div/>', {'class': 'd-flex h-100 w-100 justify-content-end'}).append(
+        $('<div/>', {  'class': 'remote-stream-container'}).append(
+          $('<div/>', {'id': streamId + '_mute', 'class': 'mute-overlay'}).append(
+              $('<i/>', {'class': 'fas fa-microphone-slash'})
+          ),
+          $('<div/>', {'id': streamId + '_no-video', 'class': 'no-video-overlay text-center'}).append(
+            $('<i/>', {'class': 'fas fa-user'})
+          ),
+          $('<div/>', {'id': 'agora_remote_' + streamId, 'class': 'remote-video'})
+        )
+      )
     )
   );
   remoteStream.play('agora_remote_' + streamId); 

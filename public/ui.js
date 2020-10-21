@@ -1,3 +1,14 @@
+
+// join channel modal
+$( "#join-channel" ).click(function( event ) {
+  var agoraAppId = '898976a0d4b5494ca337f25e7a534a7e';
+  var pathName = window.location.pathname.split('/')
+  var channelName = window.location.search.replace('?channel=', '')
+
+  initClientAndJoinChannel(agoraAppId, channelName);
+  $("#modalForm").modal("hide");
+});
+
 // UI buttons
 function enableUiControls(localStream) {
 
@@ -20,8 +31,8 @@ function enableUiControls(localStream) {
     if(screenShareActive){
       stopScreenShare();
     } else {
-      var agoraAppId = $('#form-appid').val();
-      var channelName = $('#form-channel').val();
+      var agoraAppId = '898976a0d4b5494ca337f25e7a534a7e';
+      var channelName = window.location.search.replace('?channel=', '')
       initScreenShare(agoraAppId, channelName); 
     }
   });
@@ -83,26 +94,36 @@ function toggleVisibility(elementID, visible) {
   }
 }
 
+
 function toggleMic(localStream) {
-  toggleBtn($("#mic-btn")); // toggle button colors
-  $("#mic-icon").toggleClass('fa-microphone').toggleClass('fa-microphone-slash'); // toggle the mic icon
-  if ($("#mic-icon").hasClass('fa-microphone')) {
-    localStream.unmuteAudio(); // enable the local mic
-    toggleVisibility("#mute-overlay", false); // hide the muted mic icon
-  } else {
-    localStream.muteAudio(); // mute the local mic
-    toggleVisibility("#mute-overlay", true); // show the muted mic icon
-  }
+    if ($("#mic-btn svg").hasClass('feather feather-mic')) {
+      $("#mic-btn svg.feather.feather-mic").replaceWith(feather.icons['mic-off'].toSvg());
+      $("#mic-btn svg.feather.feather-mic").addClass("my-2")
+      $('span.mic-btn-text').text("-----")
+      localStream.muteAudio(); // mute the local mic
+      toggleVisibility("#mute-overlay", true); // show the muted mic icon
+    } else {
+      $("#mic-btn svg.feather.feather-mic-off").replaceWith(feather.icons['mic'].toSvg());
+      $("#mic-btn svg.feather.feather-mic-off").addClass("my-2")
+      $('span.mic-btn-text').text(".......")
+      localStream.unmuteAudio(); // enable the local mic
+      toggleVisibility("#mute-overlay", false); // hide the muted mic icon
+    }
+
 }
 
 function toggleVideo(localStream) {
-  toggleBtn($("#video-btn")); // toggle button colors
-  $("#video-icon").toggleClass('fa-video').toggleClass('fa-video-slash'); // toggle the video icon
-  if ($("#video-icon").hasClass('fa-video')) {
-    localStream.unmuteVideo(); // enable the local video
-    toggleVisibility("#no-local-video", false); // hide the user icon when video is enabled
+  if ($("#video-btn svg").hasClass('feather feather-video')) {
+    $("#video-btn svg.feather.feather-video").replaceWith(feather.icons['video-off'].toSvg());
+    $("#video-btn svg.feather.feather-video-off").addClass("my-2")
+    $('span.video-btn-text').text("Start Video")
+    localStream.muteVideo(); // enable the local video
+    toggleVisibility("#no-local-video", true); // hide the user icon when video is enabled    
   } else {
-    localStream.muteVideo(); // disable the local video
-    toggleVisibility("#no-local-video", true); // show the user icon when video is disabled
+    $("#video-btn svg.feather.feather-video-off").replaceWith(feather.icons['video'].toSvg());
+    $("#video-btn svg.feather.feather-video").addClass("my-2")
+    localStream.unmuteVideo(); // disable the local video
+    toggleVisibility("#no-local-video", false); // show the user icon when video is disabled
+    $('span.video-btn-text').text("Stop Video")
   }
 }

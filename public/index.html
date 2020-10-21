@@ -1,0 +1,190 @@
+<html lang="en">
+	<head>
+		<title>Group Chat Demo</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+	</head>
+	<body class="w-100">
+		<div class="h-100 w-100">
+			<div class="box">
+				<div class="row header w-100" id="main">
+							<div class="col-10">
+								<h4>
+									Event Name/title
+								</h4>
+								<p>
+									Event details 
+								</p>
+		
+							</div>
+							<div class="col-2 p-0">
+								<div class="d-flex w-100 justify-content-end">
+									<!-- <div id="local-stream-container" class="p-0">
+										<div id="mute-overlay" class="col">
+											<i id="mic-icon" class="fas fa-microphone-slash"></i>
+										</div>
+										<div id="no-local-video" class="col text-center">
+											<i id="user-icon" class="fas fa-user"></i>
+										</div>
+										<div id="local-video" class="col-12 p-0"></div>
+									</div> -->
+								</div>
+							</div>
+		
+					
+				</div>
+	
+				<div class="row content bg-dark w-100">
+					<div class="col-10">
+						<div id="full-screen-video"></div>
+					</div>
+					<div class="col-2">
+						<div class="w-100 h-100 ">
+							<div id="lower-video-bar" class="row mx-0 mb-1">
+								<div id="remote-streams-container" class="container col-12 px-1 ml-1">
+									<div id="remote-streams" class="row h-100">
+										<div id="local-stream-container" class="col-12 p-0">
+											<div id="name-overlay" class="col">
+												<div id="user-id"></div>
+											</div>
+											<div id="mute-overlay" class="col">
+												<i id="mic-icon" class="fas fa-microphone-slash"></i>
+											</div>
+											<div id="no-local-video" class="col text-center">
+												<i id="user-icon" class="fas fa-user"></i>
+											</div>
+											<div id="local-video" class="col-12 p-0"></div>
+										</div>
+										<!-- insert remote streams dynamically -->
+										
+									</div>
+								</div>
+								
+							</div>
+						</div>
+					</div>
+				</div>
+							
+				<div id="buttons-container" class="row py-4 footer justify-content-start">
+					<div class="col-md-2 col-lg-4 text-left pl-5">
+							<div class="d-flex align-items-center justify-content-start h-100">
+								<button id="mic-btn" type="button" class="btn btn-white d-inline btn-lg mx-2">
+									<i data-feather="mic" class="my-2"></i> <br />
+									<span class="mic-btn-text">
+										Mute
+									</span> 
+								</button>
+		
+								<button id="video-btn"  type="button" class="btn d-inline btn-white btn-lg mx-2">
+									<i data-feather="video" class="my-2"></i> <br />
+									<span class="video-btn-text">
+										Stop Video 
+									</span> 
+								</button>
+							</div>
+						</div>
+		
+						<div class="col-md-2 col-lg-4 text-center">
+							<div class="d-flex align-items-center justify-content-center h-100">
+								<button id="invite-btn" type="button" class="btn btn-white d-inline btn-lg mx-2">
+									<i data-feather="user" class="my-2"></i> <br />
+									<span class="invite-btn-text">
+										Invite
+									</span> 
+								</button>
+		
+								<button id="screen-share-btn" type="button" class="btn btn-success px-3 d-inline btn-lg mx-2">
+									<i id="screen-share-icon" data-feather="share" class="my-2"></i> <br />
+									<span class="screen-share-btn-text">
+										Share Screen
+									</span> 
+								</button>
+		
+								<button id="chat-btn" type="button" class="btn btn-white d-inline btn-lg mx-2">
+									<i data-feather="message-square" class="my-2"></i> <br />
+									<span class="chat-btn-text">
+										Chat
+									</span> 
+								</button>
+							</div>
+						</div>
+		
+						<!-- <div class="col-md-2 text-center">
+							<button id="video-btn"  type="button" class="btn btn-block btn-dark btn-lg">
+								<span style="font-size:30px;cursor:pointer" onclick="viewParticipants()">&#9776; Participants</span>
+							</button>
+						</div> -->
+						<div class="col-md-2 col-lg-4 text-right">
+							<div class="d-flex align-items-center justify-content-end h-100">
+								<button id="problem-btn" type="button" class="btn btn-light d-inline btn-lg mx-2">
+									<i data-feather="help-circle" class="my-2"></i>
+									<span class="problem-btn-text">
+										Facing Problem?
+									</span> 
+								</button>
+		
+								<button id="exit-btn" type="button" class="btn btn-danger d-inline btn-lg mx-2">
+									<i id="exit-icon" data-feather="log-out" class="my-2"></i>
+									<span class="exit-btn-text">
+										Leave Room
+									</span> 
+								</button>
+							</div>
+							<!-- <button id="exit-btn"  type="button" class="btn btn-block btn-danger btn-lg">
+								<i id="exit-icon" class="fas fa-phone-slash"></i>
+							</button> -->
+						</div>
+				</div>
+			</div>
+		</div>
+
+		<div id="sideView" class="side-view participants px-0 bg-light">
+			<div class="bg-dark w-100 p-1 fixed">
+				<h6 class="text-white mx-3 my-4">
+					Participants
+				</h6>
+			</div>
+			
+		</div>
+
+	<!-- Modal -->
+	<div class="modal fade" id="modalForm">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header text-center">
+					<h4 class="modal-title w-100 font-weight-bold">Join Channel</h4>
+					<button type="button" class="close" data-dismiss="modal">
+						<span>&times;</span>
+					</button>
+				</div>
+				<div class="modal-body mx-3">
+				<div class="modal-footer d-flex justify-content-center">
+					<button id="join-channel" class="btn btn-default">Join Channel</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	</body>
+	<script src="AgoraRTCSDK-3.1.1.js"></script>
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+	<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" rel="stylesheet">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>
+	<script type="text/javascript">
+		$("#mic-btn").prop("disabled", true);
+		$("#video-btn").prop("disabled", true);
+		$("#screen-share-btn").prop("disabled", true);
+		$("#exit-btn").prop("disabled", true);
+
+		$(document).ready(function(){
+			$("#modalForm").modal("show");
+		});
+	</script>
+	<script src="ui.js"></script>
+	<script src="agora-interface.js"></script>
+	<script src="https://unpkg.com/feather-icons"></script>
+	<script>
+		feather.replace()
+		</script>
+	<link rel="stylesheet" type="text/css" href="style.css"/>
+</html>
